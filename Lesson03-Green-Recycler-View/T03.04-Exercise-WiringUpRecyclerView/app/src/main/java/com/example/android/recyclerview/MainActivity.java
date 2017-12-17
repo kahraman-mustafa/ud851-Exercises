@@ -19,6 +19,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,5 +55,27 @@ public class MainActivity extends AppCompatActivity {
 
         // Set the GreenAdapter you created on mNumbersList
         mNumberList.setAdapter(mAdapter);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+
+        switch (itemId) {
+            case R.id.action_refresh:
+                Toast.makeText(this, "Refresh action", Toast.LENGTH_LONG).show();
+                mAdapter = new GreenAdapter(NUM_LIST_ITEMS);
+                mNumberList.setAdapter(mAdapter);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
