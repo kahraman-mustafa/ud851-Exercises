@@ -21,7 +21,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 /**
@@ -41,8 +40,6 @@ public class GreenAdapter extends RecyclerView.Adapter<GreenAdapter.NumberViewHo
     private static final String TAG = GreenAdapter.class.getSimpleName();
 
     private int mNumberItems;
-
-    private Context mContext;
 
     /**
      * Constructor for GreenAdapter that accepts a number of items to display and the specification
@@ -67,9 +64,9 @@ public class GreenAdapter extends RecyclerView.Adapter<GreenAdapter.NumberViewHo
      */
     @Override
     public NumberViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        mContext = viewGroup.getContext();
+        Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.number_list_item;
-        LayoutInflater inflater = LayoutInflater.from(mContext);
+        LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
@@ -112,8 +109,6 @@ public class GreenAdapter extends RecyclerView.Adapter<GreenAdapter.NumberViewHo
 
         // Will display the position in the list, ie 0 through getItemCount() - 1
         TextView listItemNumberView;
-        TextView listItemIndexView;
-        FrameLayout itemContainerFrameLayout;
 
         /**
          * Constructor for our ViewHolder. Within this constructor, we get a reference to our
@@ -126,8 +121,6 @@ public class GreenAdapter extends RecyclerView.Adapter<GreenAdapter.NumberViewHo
             super(itemView);
 
             listItemNumberView = (TextView) itemView.findViewById(R.id.tv_item_number);
-            listItemIndexView = (TextView) itemView.findViewById(R.id.tv_item_index);
-            itemContainerFrameLayout = (FrameLayout) itemView.findViewById(R.id.fl_item_container);
         }
 
         /**
@@ -137,14 +130,6 @@ public class GreenAdapter extends RecyclerView.Adapter<GreenAdapter.NumberViewHo
          */
         void bind(int listIndex) {
             listItemNumberView.setText(String.valueOf(listIndex));
-
-            // 17 colors are given in the ColorUtils, we can have more than 17 items
-            // so get modulus of the item index, then set corresponding green tone to background
-            int colorIndex = listIndex % 17;
-            int backgroundColor = ColorUtils.getViewHolderBackgroundColorFromInstance(mContext, colorIndex);
-            itemContainerFrameLayout.setBackgroundColor(backgroundColor);
-            // Set list item index text like "ViewHolder  index : 1"
-            listItemIndexView.setText("ViewHolder \r index: " + String.valueOf(colorIndex));
         }
     }
 }

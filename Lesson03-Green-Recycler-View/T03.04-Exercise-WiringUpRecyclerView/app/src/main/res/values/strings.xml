@@ -15,5 +15,4 @@
 -->
 <resources>
     <string name="app_name">RecyclerView</string>
-    <string name="action_refresh">Refresh</string>
 </resources>
