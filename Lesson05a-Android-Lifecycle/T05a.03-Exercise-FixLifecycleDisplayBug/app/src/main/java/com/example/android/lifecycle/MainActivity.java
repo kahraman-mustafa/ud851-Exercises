@@ -71,15 +71,15 @@ public class MainActivity extends AppCompatActivity {
                 String allPreviousLifecycleCallbacks = savedInstanceState
                         .getString(LIFECYCLE_CALLBACKS_TEXT_KEY);
                 mLifecycleDisplay.setText(allPreviousLifecycleCallbacks);
+
+                // COMPLETED (4) Iterate backwards through mLifecycleCallbacks, appending each String and a newline to mLifecycleDisplay
+                for (int i = 0; i < mLifeCycleCallbacks.size(); i++) {
+                    mLifecycleDisplay.append(mLifeCycleCallbacks.get(i) + "\n");
+                }
+                // COMPLETED (5) Clear mLifecycleCallbacks after iterating through it
+                mLifeCycleCallbacks.clear();
             }
         }
-
-        // COMPLETED (4) Iterate backwards through mLifecycleCallbacks, appending each String and a newline to mLifecycleDisplay
-        for (int i = 0; i < mLifeCycleCallbacks.size(); i++) {
-            mLifecycleDisplay.append(mLifeCycleCallbacks.get(i) + "\n");
-        }
-        // COMPLETED (5) Clear mLifecycleCallbacks after iterating through it
-        mLifeCycleCallbacks.clear();
 
         logAndAppend(ON_CREATE);
     }
