@@ -21,6 +21,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -163,13 +164,15 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public Loader<String> onCreateLoader(int id, final Bundle args) {
+        Log.d("MainActivity", "onCreateLoader()");
         return new AsyncTaskLoader<String>(this) {
 
-            // TODO (1) Create a String member variable called mGithubJson that will store the raw JSON
+            // COMPLETED (1) Create a String member variable called mGithubJson that will store the raw JSON
+            String mGithubJson = null;
 
             @Override
             protected void onStartLoading() {
-
+                Log.d("MainActivity", "AsyncTaskLoader onStartLoading()");
                 /* If no arguments were passed, we don't have a query to perform. Simply return. */
                 if (args == null) {
                     return;
@@ -181,13 +184,19 @@ public class MainActivity extends AppCompatActivity implements
                  */
                 mLoadingIndicator.setVisibility(View.VISIBLE);
 
-                // TODO (2) If mGithubJson is not null, deliver that result. Otherwise, force a load
-                forceLoad();
+                // COMPLETED (2) If mGithubJson is not null, deliver that result. Otherwise, force a load
+                if(mGithubJson != null) {
+                    Log.d("MainActivity", "onStartLoading() DontLoadAgainDisplayPreviousResult: " + mGithubJson);
+                    mSearchResultsTextView.setText(mGithubJson);
+                } else {
+                    Log.d("MainActivity", "onStartLoading() LoadResultsNoPrevious");
+                    forceLoad();
+                }
             }
 
             @Override
             public String loadInBackground() {
-
+                Log.d("MainActivity", "AsyncTaskLoader loadInBackgorund()");
                 /* Extract the search query from the args using our constant */
                 String searchQueryUrlString = args.getString(SEARCH_QUERY_URL_EXTRA);
 
@@ -200,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements
                 try {
                     URL githubUrl = new URL(searchQueryUrlString);
                     String githubSearchResults = NetworkUtils.getResponseFromHttpUrl(githubUrl);
+                    Log.d("MainActivity", "AsyncTaskLoader loadInBackgorund() ResponseFromUrl: " + githubSearchResults);
                     return githubSearchResults;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -207,14 +217,21 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
 
-            // TODO (3) Override deliverResult and store the data in mGithubJson
-            // TODO (4) Call super.deliverResult after storing the data
+            // COMPLETED (3) Override deliverResult and store the data in mGithubJson
+            // COMPLETED (4) Call super.deliverResult after storing the data
+
+            @Override
+            public void deliverResult(String data) {
+                mGithubJson = data;
+                Log.d("MainActivity", "AsyncTaskLoader deliverResult(): " + mGithubJson);
+                super.deliverResult(data);
+            }
         };
     }
 
     @Override
     public void onLoadFinished(Loader<String> loader, String data) {
-
+        Log.d("MainActivity", "onLoadFinished()");
         /* When we finish loading, we want to hide the loading indicator from the user. */
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         /*
@@ -224,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements
         if (null == data) {
             showErrorMessage();
         } else {
+            Log.d("MainActivity", "onLoadFinished() ShowResults: " + data);
             mSearchResultsTextView.setText(data);
             showJsonDataView();
         }
@@ -235,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements
          * We aren't using this method in our example application, but we are required to Override
          * it to implement the LoaderCallbacks<String> interface
          */
+        Log.d("MainActivity", "onLoaderReset()");
     }
 
     @Override
