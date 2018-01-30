@@ -156,14 +156,45 @@ public class TaskContentProvider extends ContentProvider {
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
 
-        // TODO (1) Get access to the database and write URI matching code to recognize a single item
+        // COMPLETED (1) Get access to the database and write URI matching code to recognize a single item
+        final SQLiteDatabase db = mTaskDbHelper.getWritableDatabase();
 
-        // TODO (2) Write the code to delete a single row of data
+        // COMPLETED (2) Write the code to delete a single row of data
         // [Hint] Use selections to delete an item by its row ID
+        int match = sUriMatcher.match(uri);
+        int numDeleted = 0;
 
-        // TODO (3) Notify the resolver of a change and return the number of items deleted
+        switch (match) {
+            // Delete the tasks directory
+            case TASKS:
+                // Deleting whole directory will not be handled
+                break;
 
-        throw new UnsupportedOperationException("Not yet implemented");
+            // Add a case to delete for a single row of data by ID
+            // Use selections and selectionArgs to filter for that ID
+            case TASK_WITH_ID:
+                // Get the id from the URI
+                String id = uri.getPathSegments().get(1);
+
+                // Selection is the _ID column = ?, and the Selection args = the row ID from the URI
+                String mSelection = "_id=?";
+                String[] mSelectionArgs = new String[]{id};
+
+                // Construct a delete passing in the selection/args
+                numDeleted =  db.delete(TABLE_NAME,
+                        mSelection,
+                        mSelectionArgs);
+                break;
+
+            // Default exception
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        // COMPLETED (3) Notify the resolver of a change and return the number of items deleted
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        return numDeleted;
     }
 
 
